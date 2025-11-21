@@ -7,11 +7,13 @@
       ii) type of connectivity (e.g. coherence, phase lock value, etc.)
       iii) Time window.
   B) Select different networks (groups of nodes, e.g. those that comprise the fronto-parietal network) and frequencies (e.g., theta) based on previous literature.
-  C) Transform the matrices into a readable format for the specific machine learning model. 
+  C) Run a PCA analysis
+  D) Transform the matrices into a readable format for the specific machine learning model. 
 
 **Step 2: Train Model**
-Train different SVM models to predict subjects' working memory scores based on functional connectivity.
-Compare the accuracy rates of SVM models based on the network used to predict the scores. 
+TWO OPTIONS:
+1) Train a LASSO regression to predict subjects' cognitive battery scores (e.g. working memory) based on functional connectivity.
+2) (If we categorize scores) Train an SVM model and compare the accuracy rates of different SVM models used to predict scores in different cognitive domains. 
 
 
 **Step 3 (optional): Obtain dFC from individual MRI and run the models with this more accurate feature**

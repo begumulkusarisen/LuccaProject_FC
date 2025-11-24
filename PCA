@@ -1,1 +1,9 @@
+# importing required libraries
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+#import data set 
+Note: the dFC for each subject needs to be vectorized. so 
+
 If the results are z-score standardized, we don't need to standardize them during PCA analyses. 

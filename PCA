@@ -1,0 +1,1 @@
+If the results are z-score standardized, we don't need to standardize them during PCA analyses. 

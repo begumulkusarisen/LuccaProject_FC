@@ -1,0 +1,45 @@
+% --- Assume ConnData is loaded from file ---
+ConnData = NAME_OF_TF_FILE; 
+
+[N_Pairs, N_Windows, N_Freq] = size(ConnData);
+JumpLength_TS = zeros(N_Windows - 1, N_Freq); 
+
+% Loop through each frequency band 
+for band_idx = 1:N_Freq
+    
+    Current_FreqData = ConnData(:, :, band_idx);
+    
+    % Loop through time windows 
+    for time_idx = 1 : (N_Windows - 1)
+        
+        Vector_t = Current_FreqData(:, time_idx);
+        Vector_t_plus_1 = Current_FreqData(:, time_idx + 1);
+        
+        % --- Core MATLAB Calculation (Toolbox-Free) ---
+        
+        % 1. Calculate Covariance Matrix (2x2)
+        Cov_Output = cov(Vector_t, Vector_t_plus_1);
+        
+        % 2. Extract the Covariance of X and Y (off-diagonal element)
+        Cov_XY = Cov_Output(1, 2); 
+        
+        % 3. Calculate Standard Deviations
+        Std_X = std(Vector_t);
+        Std_Y = std(Vector_t_plus_1);
+        
+        % 4. Calculate Correlation (r)
+        % Check for division by zero (zero variance, meaning constant vector)
+        if (Std_X == 0 || Std_Y == 0)
+            % If variance is zero, the network hasn't changed (correlation is 1)
+            R_value = 1; 
+        else
+            % Calculate r = cov(X,Y) / (std(X) * std(Y))
+            R_value = Cov_XY / (Std_X * Std_Y);
+        end
+        
+        % Store the resulting correlation coefficient
+        JumpLength_TS(time_idx, band_idx) = R_value; 
+    end
+end
+
+disp('JumpLength_TS matrix (158x6) calculated using core MATLAB functions.');

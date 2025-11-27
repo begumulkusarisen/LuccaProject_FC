@@ -1,0 +1,9 @@
+**STEPS ON GETTING THE DYNAMIC FUNCTIONAL MATRICES ON BRAINSTORM**
+1) Review → import .set file. 
+2) Fix electrodes onto the scalp (edit channel)
+3) Compute head model → BEM → lower memory option
+4) Compute source. I did LCVM
+5) Compute phase lock value NxN: Use scouts --> Desikan-Killany. Apply scouts function (mean) BEFORE. Hilbert. 
+Windowed. window length = 5s. Window Overlap = 50%. Estimate & save Across combined.
+6) Export file to matlab
+

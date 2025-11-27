@@ -3,7 +3,7 @@
 TITLE: Brain networks that best predict individual working memory performance. A project based on EEG functional connectivity and TAP scores
 
 PROJECT DESCRIPTION: We are developing a predictive model for individual working memory (WM) performance based on brain network activity derived from resting-state EEG data. Specifically, we are calculating functional connectivity (FC) matrices from source-localized EEG data and then using these matrices to train a machine learning model (such as Lasso Regression or Support Vector Machines) to map from connectivity to behaviour. The project is for anyone interested in the neural correlates of cognition and investigating the connectivity for cognitive traits. The goal is to identify specific brain networks (groups of interconnected nodes) that are most predictive of working memory scores or any other cognitive domain that collaborators may be interested in investigating! The data will be taken from an open source data set: Max Planck Institut Leipzig Mind-Brain-Body Dataset - LEMON.
-better memory -> better fronto-parietal connectivity
+better TAP scores -> better fronto-parietal connectivity
 
 GOALS FOR BRAIN HACK:
 **GOAL 1: Feature Extraction**  

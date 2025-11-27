@@ -42,4 +42,3 @@ for band_idx = 1:N_Freq
     end
 end
 
-disp('JumpLength_TS matrix (158x6) calculated using core MATLAB functions.');

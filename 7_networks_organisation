@@ -1,0 +1,67 @@
+%Deriving separate matrices of 7 canonical networks% 
+
+% 1. Extract the network label for each of the 100 ROIs
+roi_labels = {hhh.Atlas.Scouts.Label};
+
+network_names = cell(length(roi_labels), 1);
+for i = 1:length(roi_labels)
+    % Extract the network prefix (e.g., 'Cont', 'Default') from the label.
+    idx = find(roi_labels{i} == '_', 1, 'first');
+    network_names{i} = roi_labels{i}(1:idx-1); 
+end
+
+% 2. Create a unique list of network names and map them to a numeric ID (1-7)
+[unique_networks, ~, network_id_vector] = unique(network_names);
+num_rois = length(network_id_vector); % 100
+Ntime = size(hhh.TF, 2); % 69 time windows
+
+% 'network_id_vector' is the 100x1 vector mapping each ROI to a network ID (1-7).
+% Initialize a structure to hold the results for the 7 networks
+Network_Within_Dyna_Connectivity = struct();
+
+% Loop through each time window to reconstruct the full 100x100 matrix
+% This part MUST be done first for all networks at a given time point
+for t = 1:Ntime
+    
+    % --- A. Reconstruct the full 100x100 matrix (R_roi) ---
+    R_roi = zeros(num_rois, num_rois);
+    compressed_vector = hhh.TF(:, t); % 5050x1 vector for time t
+    
+    % Fill the upper triangle (including diagonal) using the 5050 elements
+    k = 1;
+    for i = 1:num_rois
+        for j = i:num_rois
+            R_roi(i, j) = compressed_vector(k);
+            k = k + 1;
+        end
+    end
+    
+    % Symmetrize the matrix
+    R_roi = R_roi + triu(R_roi, 1)';
+    
+    % --- B. Extract the within-network sub-matrices ---
+    
+    for net_idx = 1:length(unique_networks)
+        % Get the name of the current network (e.g., 'Cont')
+        net_name = unique_networks{net_idx};
+        
+        % Get the logical indices for the ROIs belonging to this network
+        idx_rois = (network_id_vector == net_idx);
+        
+        % Extract the sub-matrix (e.g., 15x15) for this network at time t
+        sub_matrix = R_roi(idx_rois, idx_rois);
+        
+        % Store the result: Append the 2D matrix as a new slice in the 3D matrix
+        % The field name is based on the network name for easy identification
+        
+        if t == 1
+            % Initialize the 3D matrix on the first time point
+            % The size will be N_rois_in_net x N_rois_in_net x Ntime
+            N_rois_in_net = size(sub_matrix, 1);
+            Network_Within_Dyna_Connectivity.(net_name) = NaN(N_rois_in_net, N_rois_in_net, Ntime);
+        end
+        
+        % Assign the sub-matrix to the corresponding time slice
+        Network_Within_Dyna_Connectivity.(net_name)(:, :, t) = sub_matrix;
+    end
+end

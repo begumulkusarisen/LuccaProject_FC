@@ -2,8 +2,10 @@
 1) Review → import .set file. 
 2) Fix electrodes onto the scalp (edit channel)
 3) Compute head model → BEM → lower memory option
+Then compute the identity noise covariance
+Then compute data covariance, Baseline: 0 to 0 seconds. Then Data 0 to 400 seconds. Click block by block to avoid effects of slow shifts in data
 4) Compute source. I did LCVM
-5) Compute phase lock value NxN: Use scouts --> Desikan-Killany. Apply scouts function (mean) BEFORE. 
+5) Compute phase lock value NxN: Use scouts --> Schafer 100 Apply scouts function (mean) BEFORE. 
 Hilbert (NOTE: Edit hilbert and delete high gamma) 
 Windowed. window length = 5s. Window Overlap = 50%. Estimate & save Across combined.
 

@@ -1,0 +1,58 @@
+% --- Assume ConnData is loaded from file ---
+ConnData = sub32311.TF; 
+
+% Assuming the structure is: [N_Pairs, N_Windows, N_Freq]
+[N_Pairs, N_Windows, N_Freq] = size(ConnData);
+
+% --- 1. Select the frequency band to analyze ---
+% We will analyze only the first frequency band (index 1).
+band_idx = 1; 
+
+% Extract data for the single selected frequency
+Current_FreqData = ConnData(:, :, band_idx);
+
+% Initialize the result vector. It only needs to store the results over time windows.
+JumpLength_TS_Dissimilarity = zeros(N_Windows - 1, 1); 
+
+% --- Loop through time windows (Dynamic Connectivity) ---
+for time_idx = 1 : (N_Windows - 1)
+    
+    % Vector for the current time window 't'
+    Vector_t = Current_FreqData(:, time_idx);
+    
+    % Vector for the next time window 't+1'
+    Vector_t_plus_1 = Current_FreqData(:, time_idx + 1);
+    
+    % --- Core MATLAB Calculation (Toolbox-Free) ---
+    
+    % 1. Calculate Covariance Matrix (2x2)
+    Cov_Output = cov(Vector_t, Vector_t_plus_1);
+    
+    % 2. Extract the Covariance of X and Y (off-diagonal element)
+    Cov_XY = Cov_Output(1, 2); 
+    
+    % 3. Calculate Standard Deviations
+    Std_X = std(Vector_t);
+    Std_Y = std(Vector_t_plus_1);
+    
+    % 4. Calculate Correlation (r)
+    % Check for division by zero (zero variance, meaning constant vector)
+    if (Std_X == 0 || Std_Y == 0)
+        % If variance is zero, the network hasn't changed (correlation is 1)
+        R_value = 1; 
+    else
+        % Calculate r = cov(X,Y) / (std(X) * std(Y))
+        R_value = Cov_XY / (Std_X * Std_Y);
+    end
+    
+    % --- 2. Calculate Dissimilarity (1 - Correlation) ---
+    % Higher value means the matrices are more different.
+    Dissimilarity_Value = 1 - R_value;
+    
+    % Store the resulting dissimilarity coefficient
+    JumpLength_TS_Dissimilarity(time_idx) = Dissimilarity_Value; 
+end
+% The final result is in the vector JumpLength_TS_Dissimilarity
+
+MeanJL=mean(JumpLength_TS_Dissimilarity)
+Std_JL = std(JumpLength_TS_Dissimilarity)
